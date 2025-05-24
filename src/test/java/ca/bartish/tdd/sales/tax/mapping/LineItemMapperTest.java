@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class InputMapperTest {
+public class LineItemMapperTest {
 
     private static final String[] TEST_INPUT_ONE =
             {
@@ -16,7 +16,7 @@ public class InputMapperTest {
                     "1 chocolate bar at 0.85"
             };
 
-    private Mapper<String[], List<Item>> sut = new InputMapper();
+    private Mapper<String[], List<Item>> sut = new LineItemMapper();
 
     @Test
     void will_map_items(){

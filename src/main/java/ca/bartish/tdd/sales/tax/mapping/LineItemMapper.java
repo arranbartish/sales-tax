@@ -5,15 +5,15 @@ import ca.bartish.tdd.sales.tax.model.Item;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class InputMapper implements Mapper<String[], List<Item>> {
+public class LineItemMapper implements Mapper<String[], List<Item>> {
 
     private final Mapper<String, Item> itemMapper;
 
-    public InputMapper(final Mapper<String, Item> itemMapper) {
+    public LineItemMapper(final Mapper<String, Item> itemMapper) {
         this.itemMapper = itemMapper;
     }
 
-    public InputMapper() {
+    public LineItemMapper() {
         this(new ItemMapper());
     }
 

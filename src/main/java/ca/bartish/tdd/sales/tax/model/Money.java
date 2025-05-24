@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @EqualsAndHashCode
 @ToString
@@ -12,7 +13,7 @@ public final class Money {
 
     private final MonetaryAmount value;
 
-    private Money(MonetaryAmount value) {
+    Money(MonetaryAmount value) {
         this.value = value;
     }
 
@@ -26,8 +27,20 @@ public final class Money {
 
     public static class MoneyBuilder {
 
+        private Money source;
         private BigDecimal value;
+        private MonetaryAmount rawValue;
         private String currency = "CAD";
+
+        public MoneyBuilder value(Money value) {
+            this.source = value;
+            return this;
+        }
+
+        public MoneyBuilder value(MonetaryAmount value) {
+            this.rawValue = value;
+            return this;
+        }
 
         public MoneyBuilder value(String value) {
             this.value = new BigDecimal(value);
@@ -40,8 +53,15 @@ public final class Money {
         }
 
         public Money build() {
-            MonetaryAmount moneyAmount = new MonetaryAmountBuilder().value(value).currency(currency).build();
-            return new Money(moneyAmount);
+            return Optional.ofNullable(source)
+                    .or(this::makeMoney)
+                    .orElseThrow(() -> new IllegalStateException("Money could not be constructed from value and currency"));
+        }
+
+        private Optional<Money> makeMoney() {
+            return Optional.ofNullable(rawValue)
+                    .or(() -> Optional.of(new MonetaryAmountBuilder().value(value).currency(currency).build()))
+                    .map(Money::new);
         }
     }
 }
