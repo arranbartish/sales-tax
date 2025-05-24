@@ -12,6 +12,7 @@ public class BasketMother extends Basket.BasketBuilder {
     public BasketMother() {
         items = new ArrayList<>();
         items.add(new ItemMother().book());
+        name("A basket");
     }
 
     public BasketMother empty() {

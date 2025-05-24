@@ -12,6 +12,8 @@ import java.util.List;
 @EqualsAndHashCode
 public final class Basket {
 
+    private final String name;
+
     @Singular
     private final List<Item> items;
 }

@@ -1,11 +1,13 @@
 package ca.bartish.tdd.sales.tax.model;
 
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
 
 @EqualsAndHashCode
+@ToString
 public final class Money {
 
     private final MonetaryAmount value;
