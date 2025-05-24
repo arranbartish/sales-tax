@@ -49,6 +49,10 @@ public class ItemMother extends Item.ItemBuilder {
                 .quantity(1);
     }
 
+    public ItemMother price(String value) {
+        return price(m -> m.value(value));
+    }
+
     public ItemMother price(Consumer<MoneyMother> priceCustomizer) {
         priceCustomizer.accept(moneyMother);
         return this;
