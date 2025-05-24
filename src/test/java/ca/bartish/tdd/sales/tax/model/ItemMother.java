@@ -19,7 +19,6 @@ public class ItemMother extends Item.ItemBuilder {
     public ItemMother book(String price) {
         return (ItemMother) price(m -> m.value(price))
                 .name("book")
-                .taxFree()
                 .local()
                 .quantity(1);
     }
@@ -31,7 +30,6 @@ public class ItemMother extends Item.ItemBuilder {
     public ItemMother musicCD(String price) {
         return (ItemMother) price(m -> m.value(price))
                 .name("music CD")
-                .taxed()
                 .local()
                 .quantity(1);
     }
@@ -44,7 +42,6 @@ public class ItemMother extends Item.ItemBuilder {
     public ItemMother chocolateBar(String price) {
         return (ItemMother) price(m -> m.value(price))
                 .name("chocolate bar")
-                .taxed()
                 .local()
                 .quantity(1);
     }

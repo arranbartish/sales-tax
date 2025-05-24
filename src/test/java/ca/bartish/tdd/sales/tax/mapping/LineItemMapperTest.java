@@ -25,7 +25,7 @@ public class LineItemMapperTest {
                 .containsExactly(
                         new ItemMother().book("12.49").build(),
                         new ItemMother().musicCD("14.99").build(),
-                        new ItemMother().chocolateBar("0.85").taxFree().build());
+                        new ItemMother().chocolateBar("0.85").build());
 
     }
 

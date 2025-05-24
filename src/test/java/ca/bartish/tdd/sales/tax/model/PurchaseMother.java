@@ -28,7 +28,6 @@ public class PurchaseMother extends Purchase.PurchaseBuilder {
         return item(itemMother -> itemMother
                 .isImported(item.isImported())
                 .name(item.getName())
-                .isExempted(item.isExempted())
                 .quantity(item.getQuantity())
                 .price(item.getPrice()));
 

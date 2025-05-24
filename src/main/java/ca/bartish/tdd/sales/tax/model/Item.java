@@ -11,7 +11,6 @@ public final class Item {
     private final String name;
     private final Money price;
     private final boolean isImported;
-    private final boolean isExempted;
     private final int quantity;
 
 
@@ -23,14 +22,6 @@ public final class Item {
 
         public ItemBuilder local() {
             return isImported(false);
-        }
-
-        public ItemBuilder taxFree() {
-            return isExempted(true);
-        }
-
-        public ItemBuilder taxed() {
-            return isExempted(false);
         }
     }
 }

@@ -21,12 +21,10 @@ class BasketMapperTest {
                 .addItem(itemMother ->
                         itemMother.book("12.49")
                                 .local()
-                                .taxFree()
                                 .quantity(1))
                 .addItem(itemMother ->
                         itemMother.chocolateBar("10.00")
                         .imported()
-                        .taxFree()
                         .quantity(1)
                         .name("box of chocolates"))
                 .name(rawBasket.getName())

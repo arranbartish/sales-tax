@@ -18,7 +18,6 @@ class ItemMapperTest {
         Item book = sut.map(ItemMapperTest.BOOK);
         Item expected = new ItemMother()
                 .book("12.49")
-                .taxFree()
                 .local()
                 .build();
         Assertions.assertThat(book).isEqualTo(expected);
@@ -30,7 +29,6 @@ class ItemMapperTest {
         Item expected = new ItemMother()
                 .musicCD("14.99")
                 .quantity(2)
-                .taxed()
                 .local()
                 .build();
         Assertions.assertThat(book).isEqualTo(expected);
@@ -43,7 +41,6 @@ class ItemMapperTest {
                 .chocolateBar("5.30")
                 .name("chocolates")
                 .quantity(1)
-                .taxFree()
                 .imported()
                 .build();
         Assertions.assertThat(book).isEqualTo(expected);

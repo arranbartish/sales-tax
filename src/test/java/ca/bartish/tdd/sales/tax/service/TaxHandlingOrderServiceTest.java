@@ -15,7 +15,6 @@ class TaxHandlingOrderServiceTest {
                 .addItem(itemMother ->
                         itemMother.book("12.49")
                                 .local()
-                                .taxFree()
                                 .quantity(2))
                 .build();
 
