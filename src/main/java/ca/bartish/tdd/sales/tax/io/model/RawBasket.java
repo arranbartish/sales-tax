@@ -4,7 +4,6 @@ import ca.bartish.tdd.sales.tax.constraint.HasDescription;
 import ca.bartish.tdd.sales.tax.constraint.HasPrice;
 import ca.bartish.tdd.sales.tax.constraint.HasQuantity;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;

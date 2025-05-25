@@ -5,6 +5,7 @@ import ca.bartish.tdd.sales.tax.constraint.HasDescription;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 
 import java.util.Optional;
 
@@ -12,6 +13,9 @@ public class HasDescriptionValidator implements ConstraintValidator<HasDescripti
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        HibernateConstraintValidatorContext hibernateContext =
+                context.unwrap(HibernateConstraintValidatorContext.class);
+        hibernateContext.addMessageParameter("value", value);
         return Optional.ofNullable(value)
                 .map(StringUtils::lowerCase)
                 .map(this::removeImportedIndicator)

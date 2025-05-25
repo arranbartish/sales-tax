@@ -30,9 +30,9 @@ class RawBasketTest {
                 .build();
         JSR380Assertions.assertThat(basket)
                 .hasViolationsExactlyInAnyOrder(
-                        "{ca.bartish.tdd.sales.tax.constraint.HasDescription.message}",
-                        "{ca.bartish.tdd.sales.tax.constraint.HasPrice.message}",
-                        "{ca.bartish.tdd.sales.tax.constraint.HasQuantity.message}");
+                        "The item in the basket [imported] must have a price and did not.",
+                        "The item in the basket [imported] must have a quantity and did not.",
+                        "The item in the basket [imported] must have a description and did not.");
     }
 
     @Test
@@ -44,9 +44,9 @@ class RawBasketTest {
                 .build();
         JSR380Assertions.assertThat(basket)
                 .hasViolationsExactlyInAnyOrder(
-                        "{ca.bartish.tdd.sales.tax.constraint.HasDescription.message}",
-                        "{ca.bartish.tdd.sales.tax.constraint.HasPrice.message}",
-                        "{ca.bartish.tdd.sales.tax.constraint.HasQuantity.message}",
-                                "must not be blank");
+                        "The item in the basket [ ] must have a quantity and did not.",
+                        "must not be blank",
+                        "The item in the basket [ ] must have a description and did not.",
+                        "The item in the basket [ ] must have a price and did not.");
     }
 }

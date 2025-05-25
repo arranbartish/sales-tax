@@ -1,5 +1,6 @@
 package ca.bartish.tdd.sales.tax.model;
 
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
@@ -56,10 +57,32 @@ class PurchaseTest {
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(purchase.getCost())
-                    .isEqualTo(Money.value("14.36").build());
+                    .isEqualTo(Money.value("14.39").build());
             softly.assertThat(purchase.getTax())
-                    .isEqualTo(Money.value("1.87").build());
+                    .isEqualTo(Money.value("1.90").build());
         });
     }
 
+    @Test
+    void willRoundUpTaxToNearest0point05() {
+        Purchase purchase = new PurchaseMother()
+                .cleanDuties()
+                .item(customizer -> customizer
+                        .price("47.50")
+                        .name("bottle of perfume")
+                        .imported()
+                        .quantity(1))
+                .addDuty(DutyMother::provincial)
+                .addDuty(DutyMother::importTariff)
+                .build();
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(purchase.getCost())
+                    .isEqualTo(Money.value("54.65").build());
+            softly.assertThat(purchase.getTax())
+                    .isEqualTo(Money.value("7.15").build());
+        });
+
+
+    }
 }

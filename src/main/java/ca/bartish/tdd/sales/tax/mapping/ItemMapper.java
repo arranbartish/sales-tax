@@ -20,8 +20,9 @@ public class ItemMapper implements Mapper<String, Item> {
                 .reduce("", (left, right) -> String.format("%s %s", left, right))
                 .trim();
         Money price = Money.value(countWithItemAndPrice[countWithItemAndPrice.length-1].trim()).build();
-        boolean isImported = itemName.startsWith("imported");
-        itemName = StringUtils.removeStart(itemName, "imported").trim();
+        boolean isImported = itemName.contains("imported");
+        itemName = StringUtils.remove(itemName, "imported").trim();
+        itemName = StringUtils.replace(itemName, "  ", " ");
         return Item.builder()
                 .isImported(isImported)
                 .name(itemName)

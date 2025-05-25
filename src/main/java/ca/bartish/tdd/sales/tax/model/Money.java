@@ -17,8 +17,8 @@ public final class Money {
 
     private final MonetaryAmount value;
 
-    Money(MonetaryAmount value) {
-        this.value = MonetaryOperators.rounding(RoundingMode.HALF_UP,2).apply(value);
+    private Money(MonetaryAmount value) {
+        this.value = value;
     }
 
     public Money multiply(Number multiplier) {
@@ -37,12 +37,18 @@ public final class Money {
     public static MoneyBuilder value(String value) {
         return new MoneyBuilder().value(value);
     }
+
+    public static MoneyBuilder value(BigDecimal value) {
+        return new MoneyBuilder().value(value);
+    }
+
     public static class MoneyBuilder {
 
         private Money source;
         private BigDecimal value;
         private MonetaryAmount rawValue;
         private String currency = "CAD";
+        private RoundingMode roundingMode = RoundingMode.HALF_UP;
 
         public MoneyBuilder value(Money value) {
             this.source = value;
@@ -54,8 +60,14 @@ public final class Money {
             return this;
         }
 
+        public MoneyBuilder value(BigDecimal value) {
+            this.value = value;
+            return this;
+        }
+
+
         public MoneyBuilder value(String value) {
-            this.value = new BigDecimal(value);
+            value(new BigDecimal(value));
             return this;
         }
 
@@ -64,16 +76,30 @@ public final class Money {
             return this;
         }
 
+        public MoneyBuilder specificRoundingMode(RoundingMode roundingMode) {
+            this.roundingMode = roundingMode;
+            return this;
+        }
+
         public Money build() {
             return Optional.ofNullable(source)
+                    .map(s -> new BigDecimal(s.valueAsString()))
+                    .map(bd ->  bigDecimalToMonetaryAmount(bd, currency))
+                    .map(monetaryAmount -> MonetaryOperators.rounding(roundingMode,2).apply(monetaryAmount))
+                    .map(Money::new)
                     .or(this::makeMoney)
                     .orElseThrow(() -> new IllegalStateException("Money could not be constructed from value and currency"));
         }
 
         private Optional<Money> makeMoney() {
             return Optional.ofNullable(rawValue)
-                    .or(() -> Optional.of(new MonetaryAmountBuilder().value(value).currency(currency).build()))
+                    .or(() -> Optional.of(bigDecimalToMonetaryAmount(value, currency)))
+                    .map(amount -> MonetaryOperators.rounding(roundingMode,2).apply(amount))
                     .map(Money::new);
+        }
+
+        private MonetaryAmount bigDecimalToMonetaryAmount(BigDecimal bdValue, String currency) {
+            return new MonetaryAmountBuilder().value(bdValue).currency(currency).build();
         }
     }
 }
