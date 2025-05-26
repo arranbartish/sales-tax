@@ -59,7 +59,7 @@ public class ApplicationTest {
 
     @ParameterizedTest
     @MethodSource("executions")
-    void modelClassesMustMatchEqualsContract(ApplicationExecution execution) {
+    void checkExecution(ApplicationExecution execution) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(output);
 
