@@ -1,22 +1,25 @@
 package ca.bartish.tdd.sales.tax;
 
-import org.assertj.core.api.Assertions;
+import lombok.Builder;
+import lombok.Data;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class ApplicationTest {
 
     public static Properties properties = ApplicationTest.getApplicationTestProperties();
 
-    public String expectedExample = """
+    public static String EXPECTED_EXAMPLE = """
             Output 1:
             1 book: 12.49
             1 music CD: 16.49
@@ -54,41 +57,9 @@ public class ApplicationTest {
             The item in the basket [9.75] must have a quantity and did not.
             """;
 
-
-    @Test
-    void willExecuteWithoutParameters() {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(output);
-
-        Application.applicationFactory = () -> new Application(printStream);
-        Application.applicationExitFactory = statusCode -> assertThat(statusCode)
-                .describedAs("Application must exit successfully and didn't")
-                .isEqualTo(0);
-
-        Application.main(new String[]{});
-
-        String outputString = output.toString();
-        Assertions.assertThat(outputString).isEqualTo(expectedExample);
-    }
-
-    @Test
-    void willExecuteWithAFileParameter() {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(output);
-
-        Application.applicationFactory = () -> new Application(printStream);
-        Application.applicationExitFactory = statusCode -> assertThat(statusCode)
-                .describedAs("Application must exit successfully and didn't")
-                .isEqualTo(0);
-
-        Application.main(new String[]{properties.getProperty("example.file")});
-
-        String outputString = output.toString();
-        Assertions.assertThat(outputString).isEqualTo(expectedExample);
-    }
-
-    @Test
-    void willExecuteAndProvideFeedback() {
+    @ParameterizedTest
+    @MethodSource("executions")
+    void modelClassesMustMatchEqualsContract(ApplicationExecution execution) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(output);
 
@@ -96,17 +67,47 @@ public class ApplicationTest {
 
             Application.applicationFactory = () -> new Application(printStream);
             Application.applicationExitFactory = statusCode -> softly.assertThat(statusCode)
-                    .describedAs("Application must exit successfully and didn't")
-                    .isEqualTo(2);
+                    .describedAs(execution.getExpectedExitCodeViolationMessage())
+                    .isEqualTo(execution.getExpectedExitCode());
 
-            Application.main(new String[]{properties.getProperty("invalid.file")});
+            Application.main(execution.getParameters().get());
 
             String outputString = output.toString();
-            softly.assertThat(outputString).isEqualTo(INVALID_FEEDBACK);
+            softly.assertThat(outputString).isEqualTo(execution.getExpectedResult());
         });
-
-
     }
+
+    private static Stream<Arguments> executions() {
+
+        return Stream.of(
+                Arguments.of(ApplicationExecution.builder()
+                        .expectedExitCode(0)
+                        .expectedExitCodeViolationMessage("Application must exit successfully and didn't")
+                        .expectedResult(EXPECTED_EXAMPLE)
+                        .parameters(() -> new String[]{}).build()),
+                Arguments.of(ApplicationExecution.builder()
+                        .expectedExitCode(0)
+                        .expectedExitCodeViolationMessage("Application must exit successfully and didn't")
+                        .expectedResult(EXPECTED_EXAMPLE)
+                        .parameters(() -> new String[]{properties.getProperty("example.file")}).build()),
+                Arguments.of(ApplicationExecution.builder()
+                        .expectedExitCode(2)
+                        .expectedExitCodeViolationMessage("Application must exit with a user error and didn't")
+                        .expectedResult(INVALID_FEEDBACK)
+                        .parameters(() -> new String[]{properties.getProperty("invalid.file")}).build())
+        );
+    }
+
+    @Data
+    @Builder
+    static final class ApplicationExecution {
+
+        private final Supplier<String[]> parameters;
+        private final String expectedResult;
+        private final Integer expectedExitCode;
+        private final String expectedExitCodeViolationMessage;
+    }
+
 
     static Properties getApplicationTestProperties() {
         Properties properties = new Properties();
